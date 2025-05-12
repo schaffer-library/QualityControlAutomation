@@ -95,7 +95,7 @@ class GenerateSpreadsheetDialog(QtWidgets.QDialog):
             pr = parent.mapToGlobal(pg.topRight())
             self.move(pr.x() - self.width() + 20, pr.y() + 20)
 
-        # reuse main-window button style if available
+        
         self.button_style = getattr(parent, 'button_style', """
             QPushButton {
                 background-color: rgb(225, 225, 225);
@@ -110,7 +110,6 @@ class GenerateSpreadsheetDialog(QtWidgets.QDialog):
             }
         """)
 
-        # Filename input
         lbl_file = QtWidgets.QLabel("Filename:", self)
         lbl_file.setGeometry(10, 10, 200, 20)
         self.filenameEdit = QtWidgets.QLineEdit(self)
@@ -123,7 +122,6 @@ class GenerateSpreadsheetDialog(QtWidgets.QDialog):
         """)
         self.filenameEdit.setPlaceholderText("e.g. output.xlsx")
 
-        # Single-sheet entry + Add button
         lbl_sheet = QtWidgets.QLabel("Sheet Name:", self)
         lbl_sheet.setGeometry(10, 70, 100, 20)
         self.sheetNameEdit = QtWidgets.QLineEdit(self)
@@ -134,7 +132,7 @@ class GenerateSpreadsheetDialog(QtWidgets.QDialog):
             border-radius: 6px;
             padding: 2px;
         """)
-        self.sheetNameEdit.setPlaceholderText("e.g. Sheet1")
+        self.sheetNameEdit.setPlaceholderText("e.g. Box 1")
         self.sheetNameEdit.textChanged.connect(self._updateAddState)
 
         self.addSheetButton = QtWidgets.QPushButton("Add ▶", self)

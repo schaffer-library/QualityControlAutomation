@@ -1,6 +1,6 @@
 # Quality Control Automation Program
 
-This is the current working version of the Quality Control Program designed to fit into Schaffer Library's digitization workflow.
+This is the current working version of the Quality Control Program designed to fit into Schaffer Library's digitization workflow. if you're interested in how this project was created and how it has evolved over time please see our article: [Quality Control Automation for Student Driven Digitization Workflows](https://journal.code4lib.org/articles/18340)
 
 ## Setup
 
@@ -14,7 +14,12 @@ The program works with python 3.12.5, and will likely work with later versions o
 
 ## Features
 
-1. Spreadsheet checks - this function checks for:
+1. Spreadsheet generation - this function:
+   * Asks the user for a filename and sheetnames
+   * Generates a spreadsheet in the Union College ARCHES format (for easy upload to our file system)
+   * Places the output file on Desktop, expands the columns to make input easier, and opens the file
+     
+2. Spreadsheet checks - this function checks for:
     * Incorrect date formats. Highlighted or corrected based on how extreme the issue is.
     * Mismacthed locations and filenames.
     * Duplicate filenames.
