@@ -3,7 +3,7 @@ Authored by James Gaskell
 
 2/12/2025
 
-Edited by:
+Edited by: Mukundan Thanigaivelan
 
 """
 import sys
@@ -95,7 +95,7 @@ class GenerateSpreadsheetDialog(QtWidgets.QDialog):
             pr = parent.mapToGlobal(pg.topRight())
             self.move(pr.x() - self.width() + 20, pr.y() + 20)
 
-        # reuse main-window button style if available
+        
         self.button_style = getattr(parent, 'button_style', """
             QPushButton {
                 background-color: rgb(225, 225, 225);
@@ -110,7 +110,6 @@ class GenerateSpreadsheetDialog(QtWidgets.QDialog):
             }
         """)
 
-        # Filename input
         lbl_file = QtWidgets.QLabel("Filename:", self)
         lbl_file.setGeometry(10, 10, 200, 20)
         self.filenameEdit = QtWidgets.QLineEdit(self)
@@ -123,7 +122,6 @@ class GenerateSpreadsheetDialog(QtWidgets.QDialog):
         """)
         self.filenameEdit.setPlaceholderText("e.g. output.xlsx")
 
-        # Single-sheet entry + Add button
         lbl_sheet = QtWidgets.QLabel("Sheet Name:", self)
         lbl_sheet.setGeometry(10, 70, 100, 20)
         self.sheetNameEdit = QtWidgets.QLineEdit(self)
@@ -134,7 +132,7 @@ class GenerateSpreadsheetDialog(QtWidgets.QDialog):
             border-radius: 6px;
             padding: 2px;
         """)
-        self.sheetNameEdit.setPlaceholderText("e.g. Sheet1")
+        self.sheetNameEdit.setPlaceholderText("e.g. Box 1")
         self.sheetNameEdit.textChanged.connect(self._updateAddState)
 
         self.addSheetButton = QtWidgets.QPushButton("Add ▶", self)
@@ -289,7 +287,7 @@ class Ui_MainWindow(object):
         self.SpreadsheetChecks.setFont(font)
         self.SpreadsheetChecks.setStyleSheet(self.button_style)
         self.SpreadsheetChecks.setToolTip(
-            "Check your spreadsheet is god to go before scanning!."
+            "Check your spreadsheet is good to go before scanning!."
         )
         self.SpreadsheetChecks.clicked.connect(self.spreadsheetChecks)
 
@@ -485,19 +483,25 @@ class Ui_MainWindow(object):
 
 
     def spreadsheetChecks(self):
+        if not self.file.filePath:
+            messagebox.showerror("Error", "You must select an excel file before proceeding")
+            return
+        
         if not fileHandler.extract_ext(self.file.filePath):
             messagebox.showerror("Error", "The selected file is not a spreadsheet. The file type must be .xlsx, .csv or .xls")
             return
 
         self.file.createFileStructure()
-
-        if not self.file.filePath:
-            messagebox.showerror("Error", "You must select an excel file before proceeding")
-            return
         
         self.outputBox.setText("** Working... **")
         self.proc_updates()
         for i, sheet in enumerate(self.file.sheetList):
+            
+            # Added by Mukundan
+            if len(sheet.fileList) == 0:
+                messagebox.showerror("Error","Not all headers are present in the spreadsheet. Please verify that 'Filename', 'physical_location', and 'date_created' all exist.")
+                return
+            
             out = ""
             if i < 0:
                 out += "\n"

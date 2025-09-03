@@ -3,7 +3,7 @@ Authored by James Gaskell
 
 01/24/2025
 
-Edited by:
+Edited by: Mukundan Thanigaivelan
 
 """
 import os
@@ -118,9 +118,17 @@ def set_field_format(ws, column_name, column_index):
              cell.alignment = Alignment(horizontal='right')
              cell.number_format = "YYYY-MM-DD"
 
-# Test this
-# Can we call row highlighter from this method?
-# ^^ Shouldn't do it this way because sheet not written to for spreadsheetChecks only PreliminaryQC
+
+"""Writes the edited excelfile over the original version
+    Resets the original colors of the spreadsheet based on current error/fail colors
+    and the cached colors saved to file. Sets the date format to the requires ISO 
+    for upload to ARCHES
+Args:
+    ExcelFile: the current file after all QC changes were made
+Returns:
+    True: if the save is completed
+    False: if the file is open in editor so the user can be made aware with an error message
+"""
 def write_excelfile(ExcelFile):
     wb = openpyxl.load_workbook(ExcelFile.filePath)
 
@@ -149,8 +157,16 @@ def write_excelfile(ExcelFile):
         return True
     except:
         return False
-
     
+
+"""Determines whether the filename selected by the user already has a file extension
+Args:
+    filename: the name selected by the user in the GUI
+Returns:
+    True if this extension is an excel file
+    False if the file does not contain an extension
+    ValueError if the file has an extension but it is not in the proper format
+"""
 def extract_ext(filename):
     if '.' in filename:
         ext = filename.split('.')[-1]
@@ -161,13 +177,23 @@ def extract_ext(filename):
     else:
         return False
 
+"""Simple Tkinter window opened if the file already exists
+    Asks the user if they would like to overwrite
+    Returns the choice which causes the spreadsheet creation to proceed or cancel
+"""
 def ask_yes_cancel(title="Confirm", message="This file already exists. Would you like to overwrite?"):
+    """Simple """
     root = tk.Tk()
     root.withdraw()
     result = messagebox.askyesnocancel(title, message)
     root.destroy()
     return result
 
+"""Creates a spreadsheet based on the template at Union College
+    Adds as many sheets as requested by the user with their respective names
+    Adds the fields currently used for digitization as headers
+    Resizes the columns to improve readability
+"""
 def generateSpreadsheet(filename, sheetnames):
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
 
@@ -189,16 +215,19 @@ def generateSpreadsheet(filename, sheetnames):
     default_sheet = wb.active
     wb.remove(default_sheet)
 
-    headers = ['contributor', 'contributor_role', 'subjects_personal_names',
-               'Language', 'publisher', 'date_created_free', 'date_created', 'genre', 
-               'rights_statements', 'extent (total page count including covers)',
-               'Physical Location', 'Scanning Instructions', 'Filename', 'date_digital',
-               'Scanner Initials', 'QC Pass/Fail', 'QC Initials', 'QC Comments']
+    headers = ['ismemberof', 'type', 'aspace_id', 'documents', 'local_identifier', 'aspaceTitle',
+               'label (title)', 'description', 'titleProper', 'creator', 'creator_role', 'contributor',
+               'contributor_role', 'subjects_personal_names','Language', 'publisher',
+               'date_created_free', 'date_created', 'genre', 'rights_statements', 
+               'extent (total page count including covers)', 'physical_location', 
+               'Scanning Instructions', 'Filename', 'date_digital','Scanner Initials',
+               'QC Pass/Fail', 'QC Initials', 'QC Comments']
     
     column_widths = {
-        'A': 22, 'B': 15, 'C': 27, 'D': 32, 'E': 32, 'F': 35, 'G': 37,
-        'H': 14, 'I': 40, 'J': 23, 'K': 25, 'L': 23, 'M': 17, 'N': 23,
-        'O': 23, 'P': 23, 'Q': 23, 'R': 23
+        'A': 12, 'B': 12, 'C': 12, 'D': 12, 'E': 12, 'F': 12, 'G': 28, 'H': 40,'I': 12,
+        'J': 70, 'K': 30, 'L': 12, 'M': 22, 'N': 15, 'O': 27, 'P': 32, 'Q': 32, 'R': 35, 
+        'S': 37, 'T': 14, 'U': 40, 'V': 23, 'W': 25, 'X': 23, 'Y': 17, 'Z': 23,
+        'AA': 23, 'AB': 23, 'AC': 23,
     }
 
     for name in sheetnames:

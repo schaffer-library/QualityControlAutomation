@@ -3,7 +3,7 @@ Authored by James Gaskell
 
 11/06/2024
 
-Edited by:
+Edited by: Mukundan Thanigaivelan
 
 """
 import shutil
@@ -69,10 +69,13 @@ class ExcelSheet():
                 spreadsheet_extent = int(re.findall(r'\d+', row['extent (total page count including covers)'])[0])
             except:
                 spreadsheet_extent = None
-            record = ScanFile(row['Filename'],
-                            row['Physical Location'],
-                            row['date_created'] if not pd.isna(row['date_created']) else None,
-                            spreadsheet_extent)
+            record = ScanFile(row['Filename'], # --> Problem; program is looking for 
+                                # column names Filename, physical_location, and date_created;
+                                # if it doesn't find them, then it simply returns without
+                                # doing anything
+                                row['physical_location'],
+                                row['date_created'] if not pd.isna(row['date_created']) else None,
+                                spreadsheet_extent)
             
             self.fileList.append(record)
 
